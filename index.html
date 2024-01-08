@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최고 평점 영화</title>
+
+    <style>
+        body {
+            background-color: rgb(200, 254, 253);
+            margin: 0px;
+        }
+
+        .title {
+            background-color: #fbe19f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 0;
+            font-size: 35px;
+            font-weight: bold;
+        }
+
+        .search {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px 0;
+            font-size: 20px;
+
+            input {
+                width: 200px;
+                height: 20px;
+            }
+
+            button {
+                height: 25px;
+            }
+
+            border-bottom: 1px solid;
+        }
+
+        .cardlist {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #fbe19f;
+            width: 300px;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .card>img {
+            width: 100%;
+        }
+
+        .card>div {
+            margin-left: 20px;
+        }
+    </style>
+    <script>
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MDFkMzhkYTI4OThjMjkzOGQ4YTVhY2Q5YzIzNTVmZiIsInN1YiI6IjY1OTQ0MGMyMDNiZjg0MzJjMTJiZDcwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.R6sDbX0zaeB5yvyRlFlDLuOjv_jmcsOBTw0J4G8XQJE'
+            }
+        };
+        let movies =[];
+
+        fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+            .then(response => response.json())
+            .then(response => {
+                movies.push(...response.results);
+                
+                const movieCard = document.getElementById("movieCard")
+                response.results.forEach(movie => {
+                    movieCard.innerHTML += `
+                    <div class="card" id="${movie.id}" onclick="idnum(${movie.id})">
+                        <img  src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.original_title}">
+                        <h3>${movie.original_title}</h3>
+                        <p>${movie.overview}</p>
+                        <p>Ratng${movie.vote_average}</p>
+                        </div>
+                        `
+                });
+
+            }
+            ).catch(err => console.error(err));
+
+
+        function idnum(id) {
+            alert(`영화ID :` + id);
+
+        }
+
+        let keyword;
+        function searchTitle(event){
+            keyword = event.target.value
+            console.log(keyword);
+        }
+        
+        function research(keyword) {
+            let calist = [];
+            movies.forEach(function (tiSear){
+                if(tiSear.original_title.includes(keyword)) {
+                    calist.push(tiSear);
+                }
+            })
+            movieCard.innerHTML = ``
+            calist.map(movie => {
+                        movieCard.innerHTML += `
+                        <div class="card" id="${movie.id}" onclick="idnum(${movie.id})">
+                            <img  src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.original_title}">
+                            <h3>${movie.original_title}</h3>
+                            <p>${movie.overview}</p>
+                            <p>Ratng${movie.vote_average}</p>
+                            </div>
+                            `
+                    });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div class="title">최고 평점 영화 콜렉션</div>
+    <div class="search"> 영화 검색: <input placeholder="영화 재목을 검색해 보세요" onchange="searchTitle(event)" /> <button onclick="research(keyword)">검색</button></div>
+
+    <div class="cardlist" id="movieCard">
+
+    </div>
+</body>
+
+</html>
