@@ -102,14 +102,14 @@
 
         let keyword;
         function searchTitle(event){
-            keyword = event.target.value
+            keyword = event.target.value.toUpperCase()
             console.log(keyword);
         }
         
         function research(keyword) {
             let calist = [];
             movies.forEach(function (tiSear){
-                if(tiSear.original_title.includes(keyword)) {
+                if(tiSear.original_title.toUpperCase().includes(keyword)) {
                     calist.push(tiSear);
                 }
             })
