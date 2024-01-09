@@ -72,13 +72,13 @@
                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5MDFkMzhkYTI4OThjMjkzOGQ4YTVhY2Q5YzIzNTVmZiIsInN1YiI6IjY1OTQ0MGMyMDNiZjg0MzJjMTJiZDcwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.R6sDbX0zaeB5yvyRlFlDLuOjv_jmcsOBTw0J4G8XQJE'
             }
         };
-        let movies =[];
+        let movies = [];
 
         fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
             .then(response => response.json())
             .then(response => {
                 movies.push(...response.results);
-                
+
                 const movieCard = document.getElementById("movieCard")
                 response.results.forEach(movie => {
                     movieCard.innerHTML += `
@@ -101,21 +101,23 @@
         }
 
         let keyword;
-        function searchTitle(event){
+        function searchTitle(event) {
             keyword = event.target.value.toUpperCase()
+
             console.log(keyword);
         }
-        
+
         function research(keyword) {
             let calist = [];
-            movies.forEach(function (tiSear){
-                if(tiSear.original_title.toUpperCase().includes(keyword)) {
+            movies.forEach(function (tiSear) {
+                if (tiSear.original_title.toUpperCase().includes(keyword)) {
                     calist.push(tiSear);
                 }
             })
             movieCard.innerHTML = ``
             calist.map(movie => {
-                        movieCard.innerHTML += `
+                // movieCard = document.getElementById("movieCard") 지정을 안해도 id는 고유한 값으로 자동으로 찾아준다.
+                movieCard.innerHTML += `
                         <div class="card" id="${movie.id}" onclick="idnum(${movie.id})">
                             <img  src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.original_title}">
                             <h3>${movie.original_title}</h3>
@@ -123,7 +125,13 @@
                             <p>Ratng${movie.vote_average}</p>
                             </div>
                             `
-                    });
+            });
+        }
+
+        function enterkey() {
+            if (window.event.keyCode == 13) {
+                research(keyword);
+            }
         }
 
     </script>
@@ -131,7 +139,8 @@
 
 <body>
     <div class="title">최고 평점 영화 콜렉션</div>
-    <div class="search"> 영화 검색: <input placeholder="영화 재목을 검색해 보세요" onchange="searchTitle(event)" /> <button onclick="research(keyword)">검색</button></div>
+    <div class="search"> 영화 검색: <input placeholder="영화 재목을 검색해 보세요" onkeyup="enterkey()"
+            onchange="searchTitle(event)" /> <button onclick="research(keyword)">검색</button></div>
 
     <div class="cardlist" id="movieCard">
 
